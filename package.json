@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "MERN node-express server",
   "main": "index.js",
+  "engines": {
+    "node": "10.13.0",
+    "npm": "6.4.1"
+  },
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
