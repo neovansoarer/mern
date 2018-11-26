@@ -1,0 +1,12 @@
+{
+  "DB": {
+    "mongoURI": "MONGO_URI"
+  },
+  "auth": {
+    "google": {
+      "clientID": "GOOGLE_CLIENT_ID",
+      "clientSecret": "GOOGLE_CLIENT_SECRET"
+    }
+  },
+  "cookieKey": "COOKIE_KEY"
+}
