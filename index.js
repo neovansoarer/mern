@@ -1,37 +1,35 @@
-const express = require('express');
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const cookieSession = require('cookie-session');
+const mongoose = require('mongoose');
 const config = require('config');
+const express = require('express');
+
+require('./services/passport');
+
+const home = require('./routes/home');
+const auth = require('./routes/auth');
+const users = require('./routes/users');
 
 const app = express();
 
-passport.use(new GoogleStrategy(
-  {
-    clientID: config.auth.google.clientID,
-    clientSecret: config.auth.google.clientSecret,
-    callbackURL: "/auth/google/callback"
-  },
-  (accessToken, refreshToken, profile, done) => {
-    console.log(`access-token => ${accessToken}`);
-    console.log(`refresh-token => ${refreshToken}`);
-    console.log('profile =>', profile);
-    console.log(`done => ${done}`);
-  }
-));
-
-app.get('/', (req, res) => {
-  res.send({ happy: 'hacking' });
-});
-
-app.get(
-  '/auth/google', // user req toss
-  passport.authenticate('google', { scope: ['profile', 'email'] })
+mongoose.connect(config.DB.mongoURI, { useNewUrlParser: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.error(error.message));
+// NPM middleware
+app.use(
+  cookieSession({ // req.session == user.id
+    name: 'MERN cookie',
+    maxAge: (30 * 24 * 60 * 60 * 1000),
+    keys: [config.cookieKey]
+  })
 );
+app.use(passport.initialize());
+app.use(passport.session()); // req.user == <USER INSTANCE>
+// Routes
+app.use(home);
+app.use('/auth/google', auth);
+app.use('/users', users);
 
-app.get(
-  '/auth/google/callback', // req + code => google => Real user data
-  passport.authenticate('google') // can not get /auth/google/callback
-);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
