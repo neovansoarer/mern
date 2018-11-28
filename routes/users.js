@@ -6,10 +6,7 @@ router.get('/current', (req, res) => {
 
 router.get('/logout', (req, res) => {
   req.logout(); // delete-cookie()
-  res.send({
-    message: 'You signed out successfully',
-    user: req.user
-  });
+  res.redirect('/');
 });
 
 module.exports = router;

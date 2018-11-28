@@ -7,8 +7,11 @@ router.get(
 );
 
 router.get(
-  '/callback', // req + code => google => Real user data
-  passport.authenticate('google') // can not get /auth/google/callback
+  '/callback',
+  passport.authenticate('google'),
+  (req, res) => {
+    res.redirect('/dashboard');
+  }
 );
 
 module.exports = router;
